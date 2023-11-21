@@ -23,7 +23,14 @@ namespace BasicAPI.Controllers
             return events;
         }
 
-
+        [HttpGet("{id}")]
+        public ActionResult Get(int id)
+        {
+            var eve = events.Find(x => x.Id == id);
+            if (eve != null)
+                return Ok(eve);
+            return NotFound();
+        }
         // POST api/<EventsController>
         [HttpPost]
         public void Post([FromBody] Event myEvent)
@@ -33,7 +40,7 @@ namespace BasicAPI.Controllers
 
         // PUT api/<EventsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Event myEvent)
+        public ActionResult Put(int id, [FromBody] Event myEvent)
         {
             var e = events.Find(event_ => event_.Id == id);
             if (e != null)
@@ -41,17 +48,22 @@ namespace BasicAPI.Controllers
                 e.Title = myEvent.Title;
                 e.Start = myEvent.Start;
                 e.End = myEvent.End;
+                return Ok(e);
             }
-
+            return NotFound();
         }
 
         // DELETE api/<EventsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
             var e=events.Find(event_=>event_.Id==id);
-            if(e!=null)
+            if (e != null)
+            {
                 events.Remove(e);
+                return Ok();
+            }
+            return NotFound();
         }
     }
 }
