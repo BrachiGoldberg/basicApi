@@ -1,3 +1,5 @@
+using BasicAPI;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +13,8 @@ builder.Services.AddCors(opt => opt.AddPolicy("MyPolicy", policy =>
 {
     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 }));
+
+builder.Services.AddSingleton<IDataContext, DataContext>();
 
 var app = builder.Build();
 

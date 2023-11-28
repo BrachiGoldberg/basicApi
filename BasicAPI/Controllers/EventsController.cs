@@ -8,25 +8,25 @@ namespace BasicAPI.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {
-        private static List<Event> events = new List<Event>()
-        {
-            new Event() { Id=1,Title="example1",Start=new DateTime(2023,09,07)},
-            new Event() { Id=2,Title="example2",Start=new DateTime(2023,09,08)},
-            new Event() { Id=3,Title="example3",Start=new DateTime(2023,09,09)},
-        };
+        private readonly IDataContext _data;
+        static  int counterEvents = 3;
 
-       static  int counterEvents = 3;
+        public EventsController(IDataContext data)
+        {
+            _data = data;
+        }
+
         // GET: api/<EventsController>
         [HttpGet]
         public IEnumerable<Event> Get()
         {
-            return events;
+            return _data.Events;
         }
 
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            var eve = events.Find(x => x.Id == id);
+            var eve = _data.Events.Find(x => x.Id == id);
             if (eve != null)
                 return Ok(eve);
             return NotFound();
@@ -35,14 +35,14 @@ namespace BasicAPI.Controllers
         [HttpPost]
         public void Post([FromBody] Event myEvent)
         {
-            events.Add(new Event() { Id=++counterEvents ,Title=myEvent.Title,Start=myEvent.Start,End=myEvent.End});
+            _data.Events.Add(new Event() { Id=++counterEvents ,Title=myEvent.Title,Start=myEvent.Start,End=myEvent.End});
         }
 
         // PUT api/<EventsController>/5
         [HttpPut("{id}")]
         public ActionResult Put(int id, [FromBody] Event myEvent)
         {
-            var e = events.Find(event_ => event_.Id == id);
+            var e = _data.Events.Find(event_ => event_.Id == id);
             if (e != null)
             {
                 e.Title = myEvent.Title;
@@ -57,10 +57,10 @@ namespace BasicAPI.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var e=events.Find(event_=>event_.Id==id);
+            var e= _data.Events.Find(event_=>event_.Id==id);
             if (e != null)
             {
-                events.Remove(e);
+                _data.Events.Remove(e);
                 return Ok();
             }
             return NotFound();
